@@ -15,10 +15,14 @@ contract CallerContract {
     }
 }
 
+// Note: you can put this second contract in a separate file and import it.
+// (assuming the other file is in the same directory) eg. import "CalledContract.sol";
 contract CalledContract {
     uint number = 64;
     bytes32 words = "Hello World";
-    //string words = "Hello World"; // strings cannot be returned to other contracts. Use bytes32 instead.
+    //string words = "Hello World"; 
+    // strings cannot be returned to other contracts. Use bytes32 instead. 
+    // You can convert the bytes32 back to text using online tools.
 
     function getNumber() constant returns(uint) {
         return number;
