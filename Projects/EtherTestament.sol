@@ -4,8 +4,8 @@ pragma solidity ^0.4.19;
  * EtherTestament Smart Contract.
  * Author: Dominic Roy-Stang (github.com/dominicroystang)
  *
- * This contract acts as a will to prevent the loss of Ether after one's death
- * This smart contract is account with a list whitelisted addresses that
+ * This is a virtual will to prevent the loss of Ether after the owner's death.
+ * This smart contract is an account with a list of whitelisted addresses that
  * may access its funds if the owner doesn't interact with it for longer than
  * a set period of time.
  *
@@ -58,7 +58,7 @@ contract EtherTestament {
         if (msg.sender == owner) {
             lastOwnerInteraction = now;
             allowed = true;
-        } else {
+        } else if (now > lastOwnerInteraction + waitTime) {
             for (uint i = 0; i < whitelist.length; i++) {
                 if (msg.sender == whitelist[i]) {
                     allowed = true;
@@ -91,10 +91,16 @@ contract EtherTestament {
     function retrieveFunds(uint256 amount) public ifAllowed {
         // transfer function handles errors
         // eg. retrieving more than is available.
-        if (msg.sender == owner || now > lastOwnerInteraction + waitTime) {
-            msg.sender.transfer(amount);
-            LogTransfer(address(this), msg.sender, amount);
-        }
+        msg.sender.transfer(amount);
+        LogTransfer(address(this), msg.sender, amount);
+    }
+
+    /*
+     * Destroy the smart contract.
+     * Sends all funds in the will to the message sender (if allowed).
+     */
+    function killContract() public ifAllowed {
+        selfdestruct(msg.sender);
     }
 
     /*
