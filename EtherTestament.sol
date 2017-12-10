@@ -2,6 +2,8 @@ pragma solidity ^0.4.19;
 
 /*
  * EtherTestament Smart Contract.
+ * Author: Dominic Roy-Stang (github.com/dominicroystang)
+ *
  * This contract acts as a will to prevent the loss of Ether after one's death
  * This smart contract is account with a list whitelisted addresses that
  * may access its funds if the owner doesn't interact with it for longer than
@@ -12,42 +14,49 @@ pragma solidity ^0.4.19;
  */
 contract EtherTestament {
     
-    address issuer; // contract creator
+    address owner; // contract creator
     address[] whitelist;
-    uint lastIssuerInteraction;
+    uint lastOwnerInteraction;
     uint waitTime;
 
-    // Note: a constructor should NOT be payable
+    /*
+     * Public constructor for the EtherTestament.
+     * Lines followed by a "TODO" comment should be changed before deploying
+     * the contract.
+     */
     function EtherTestament() public {
-        issuer = msg.sender;
-        lastIssuerInteraction = now;
+        owner = msg.sender;
+        lastOwnerInteraction = now;
         whitelist = new address[](2); //TODO: Change the number of whitelisted addresses
         whitelist[0] = 0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C; //TODO: Change or remove the whitelisted address
         whitelist[1] = 0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB; //TODO: Change or remove the whitelisted address
-        waitTime = 30 seconds; //TODO: Change the wait time
+        waitTime = 2 years; //TODO: Change the wait time
     }
 
     /*
-     * Events can be used to store logs or as triggers for a UI layer.
-     * Events are much cheaper than contract variables
-     * (8 gas/byte vs 625 gas/byte)
+     * Transfers of funds are tracked with events.
      */
     event LogTransfer(address indexed from, address indexed to, uint256 value);
 
-    modifier ifIssuer {
-        require(msg.sender == issuer);
-        lastIssuerInteraction = now;
-        _; // '_' means "continue"
-    }
-    
     /*
-     * An address is allowed if it is the issuer OR
-     * if the issuer has not touched the contract in 2 years and the message sender is whitelisted.
+     * The owner of the contract is the address that deployed the contract
+     * (the address that called the constructor).
+     */
+    modifier ifOwner {
+        require(msg.sender == owner);
+        lastOwnerInteraction = now;
+        _; // continue
+    }
+
+    /*
+     * An address is allowed if it is the owner OR
+     * if the owner has not interacted the contract in a set amount of time
+     * (the waitTime variable) and the message sender is whitelisted.
      */
     modifier ifAllowed {
         bool allowed = false;
-        if (msg.sender == issuer) {
-            lastIssuerInteraction = now;
+        if (msg.sender == owner) {
+            lastOwnerInteraction = now;
             allowed = true;
         } else {
             for (uint i = 0; i < whitelist.length; i++) {
@@ -57,31 +66,32 @@ contract EtherTestament {
             }
         }
         if (!allowed) {
-            revert(); // msg.sender is not in the whitelist and is not issuer
+            // msg.sender is not in the whitelist and is not owner
+            revert();
         }
         _;
     }
 
     /*
      * Deposits Ether to the contract when called.
-     * Updates the lastIssuerInteraction if called by the contract issuer.
-     * Can be called with a payable of 0 ether to update the lastIssuerInteraction.
+     * Updates the lastOwnerInteraction if called by the contract owner.
+     * Can be called with a payable of 0 ether to update the lastOwnerInteraction.
      */
     function addFunds() public payable {
-        if (msg.sender == issuer) {
-            lastIssuerInteraction = now;
+        if (msg.sender == owner) {
+            lastOwnerInteraction = now;
         }
         LogTransfer(msg.sender, address(this), msg.value);
     }
 
     /*
-     * The issuer of the smart contract may call this function
+     * The owner of the smart contract may call this function
      * to retrieve the funds stored in the smart contract.
      */
     function retrieveFunds(uint256 amount) public ifAllowed {
-        // transfer method handles errors
+        // transfer function handles errors
         // eg. retrieving more than is available.
-        if (msg.sender == issuer || now > lastIssuerInteraction + waitTime) {
+        if (msg.sender == owner || now > lastOwnerInteraction + waitTime) {
             msg.sender.transfer(amount);
             LogTransfer(address(this), msg.sender, amount);
         }
@@ -89,7 +99,8 @@ contract EtherTestament {
 
     /*
      * PUBLIC GETTERS
-     * The functions below do not update the lastIssuerInteraction if called by the contract issuer.
+     * The functions below do not update the lastOwnerInteraction if called by
+     * the contract owner.
      * This was done to minimize gas used when calling those functions.
      */
 
@@ -102,11 +113,11 @@ contract EtherTestament {
     }
     
     /*
-     * returns the remaining time in seconds until the Ether stored in this contract
+     * returns the remaining time (in seconds) until the Ether stored in this contract
      * can be redeemed by a whitelisted address.
      */
     function getRemainingTime() public constant returns(int) {
-        int remainingTime = int(lastIssuerInteraction + waitTime) - int(now);
+        int remainingTime = int(lastOwnerInteraction + waitTime) - int(now);
         return remainingTime > 0 ? remainingTime : 0;
     }
 
