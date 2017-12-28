@@ -26,8 +26,8 @@ After releasing the EtherTestament contract, the owner would be able to use it a
 Provide a trustless way to ensure that your loved ones will eventually have access to your funds after your death without having to give them your private keys.
 
 **Advantages**:
-Unlike a regular ethereum wallet, the Ether contained in the wallet isn't lost if the owner loses the private keys.
-The Ether is only truly lost if the owner and all the whitelisted addresses lose their private keys.
+
+Unlike a regular ethereum wallet, the Ether contained in the wallet isn't lost if the owner loses the private keys. The Ether is only truly lost if the owner and all the whitelisted addresses lose their private keys.
 
 The owner could also choose to whitelist a few of their own other addresses to ensure that they can (eventually) recover their Ether if they lose it.
 
