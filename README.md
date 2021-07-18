@@ -1,21 +1,10 @@
-# README #
+# Ether Testament
 
-_Ethereum smart contracts README_
+> Ethereum Smart Will - simple, trustless solution to transfer funds upon one's death
 
->Ethereum Smart Will (EtherTestament) and Solidity Tutorials
+## About
 
-### What is this repository for? ###
-
-The goal of this project was to create a simple trustless solution to solve a common cryptocurrency problem: losing private keys.
-For more information, read the "What is EtherTestament.sol" section.
-
-This repository was created while I was taking notes as I was learning about Solidity.
-Those notes are saved in the "Solidity Tutorials" folder.
-They can be used as a learning resource for people who have programming experience, and are interested in getting started with Solidity.
-
-### What is EtherTestament.sol ###
-
-EtherTestament.sol is the main file in this repository.
+The goal of this project was to create a simple trustless solution to solve a common cryptocurrency problem: loss of private keys.
 
 **Basic Idea**:
 
@@ -31,11 +20,11 @@ Unlike a regular ethereum wallet, the Ether contained in the wallet isn't lost i
 
 The owner could also choose to whitelist a few of their own other addresses to ensure that they can (eventually) recover their Ether if they lose it.
 
-### How do I get set up? ###
+## Contributing
 
-**Easy way** (to test the code): 
+**Easy way** (to test the code):
 
-copy/paste the contents of the .sol files on Remix, a solidity online IDE: https://remix.ethereum.org/#version=soljson-v0.4.19+commit.c4cbbb05.js
+Copy/paste the contents of the .sol files on Remix, a Solidity online IDE: https://remix.ethereum.org/#version=soljson-v0.4.19+commit.c4cbbb05.js
 
 _Make sure you are using compiler version 0.4.19_
 
@@ -46,10 +35,14 @@ More information on Remix here: https://remix.readthedocs.io/en/latest/
 
 Run a full Ethereum node and release the contract on the Ethereum blockchain.
 
-### Who do I talk to? ###
+## Contact
 
 **Dominic Roy-Stang**
 
 **Email**: dominicroystang@gmail.com
 
-**ETH Address**: ```0x3203ea7fa2cd892586d6c7cd17cd0071440abbfe```
+**ETH Address**: `TODO`
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
